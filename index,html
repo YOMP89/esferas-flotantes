@@ -57,6 +57,126 @@
         </div>
     </div>
 
-  
+   <script>
+        const spheres = [];
+        let gravityEnabled = false;
+        let physicsParams = {
+            speedMultiplier: 1,
+            gravity: 0.5,
+            bounce: 0.8,
+            friction: 0.99
+        };
+
+        class Sphere {
+            constructor() {
+                this.element = document.createElement('div');
+                this.element.className = 'sphere';
+                this.size = Math.random() * 30 + 20;
+                this.x = Math.random() * window.innerWidth;
+                this.y = Math.random() * window.innerHeight;
+                this.vx = (Math.random() - 0.5) * 10;
+                this.vy = (Math.random() - 0.5) * 10;
+                
+                this.element.style.width = `${this.size}px`;
+                this.element.style.height = `${this.size}px`;
+                document.getElementById('sphere-container').appendChild(this.element);
+            }
+
+            update() {
+                // Aplicar física
+                if (gravityEnabled) this.vy += physicsParams.gravity;
+                
+                this.x += this.vx * physicsParams.speedMultiplier;
+                this.y += this.vy * physicsParams.speedMultiplier;
+                
+                // Rebotes en los bordes
+                if (this.x < 0 || this.x > window.innerWidth - this.size) {
+                    this.vx = -this.vx * physicsParams.bounce;
+                    this.x = Math.max(0, Math.min(this.x, window.innerWidth - this.size));
+                }
+                
+                if (this.y < 0 || this.y > window.innerHeight - this.size) {
+                    this.vy = -this.vy * physicsParams.bounce;
+                    this.y = Math.max(0, Math.min(this.y, window.innerHeight - this.size));
+                }
+
+                // Fricción
+                this.vx *= physicsParams.friction;
+                this.vy *= physicsParams.friction;
+
+                // Actualizar posición
+                this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
+            }
+        }
+
+        function createSpheres(quantity) {
+            spheres.length = 0;
+            document.getElementById('sphere-container').innerHTML = '';
+            
+            for (let i = 0; i < quantity; i++) {
+                spheres.push(new Sphere());
+            }
+        }
+
+        function updatePhysics() {
+            spheres.forEach(sphere => sphere.update());
+            
+            // Detección básica de colisiones
+            for (let i = 0; i < spheres.length; i++) {
+                for (let j = i + 1; j < spheres.length; j++) {
+                    const s1 = spheres[i];
+                    const s2 = spheres[j];
+                    
+                    const dx = s1.x - s2.x;
+                    const dy = s1.y - s2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < (s1.size/2 + s2.size/2)) {
+                        // Reacción simple a colisión
+                        const angle = Math.atan2(dy, dx);
+                        const force = 2;
+                        
+                        s1.vx += Math.cos(angle) * force;
+                        s1.vy += Math.sin(angle) * force;
+                        s2.vx -= Math.cos(angle) * force;
+                        s2.vy -= Math.sin(angle) * force;
+                    }
+                }
+            }
+            
+            requestAnimationFrame(updatePhysics);
+        }
+
+        // Controles
+        document.getElementById('quantity').addEventListener('input', function() {
+            createSpheres(this.value);
+        });
+
+        document.getElementById('speed').addEventListener('input', function() {
+            physicsParams.speedMultiplier = this.value;
+        });
+
+        function resetSpheres() {
+            createSpheres(document.getElementById('quantity').value);
+        }
+
+        function toggleGravity() {
+            gravityEnabled = !gravityEnabled;
+            document.getElementById('gravityBtn').textContent = 
+                `Gravedad: ${gravityEnabled ? 'ON' : 'OFF'}`;
+        }
+
+        // Inicialización
+        createSpheres(20);
+        updatePhysics();
+
+        // Ajustar al redimensionar ventana
+        window.addEventListener('resize', () => {
+            spheres.forEach(sphere => {
+                sphere.x = Math.min(sphere.x, window.innerWidth - sphere.size);
+                sphere.y = Math.min(sphere.y, window.innerHeight - sphere.size);
+            });
+        });
+    </script>
 </body>
 </html>
