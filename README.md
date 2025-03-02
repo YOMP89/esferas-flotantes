@@ -1,5 +1,7 @@
 # Proyecto de Sistema de Partículas
 
+![Pantallazo Generador de Esferas](PantallazoGeneradorEsferas.jpg)
+
 Este proyecto incluye un sistema de partículas interactivo con características avanzadas y efectos visuales impresionantes. A continuación se detallan sus componentes y funcionalidades:
 
 ## Sistema de Partículas
