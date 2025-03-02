@@ -3,7 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Generador de Esferas Flotantes</title>
- 
+  <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .control-group {
+            margin: 10px 0;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+
+        .sphere {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle at 30% 30%, #fff, #2196F3);
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+        }
+    </style>
 </head>
 <body>
     <div id="sphere-container"></div>
